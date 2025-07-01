@@ -7,7 +7,6 @@ using NGK_GestContact.Api.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq.Async;
 using System.Text;
 using System.Threading.Tasks;
 using Tools.Cqs.Results;
