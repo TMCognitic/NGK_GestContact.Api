@@ -20,7 +20,18 @@ namespace NGK_GestContact.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(int id)
+        {
+            ICqsResult<Contact> result = _contactRepository.Execute(new GetContactByIdQuery(id));
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result);
+        }        
+
+        [HttpGet("async/{id}")]
+        public async Task<IActionResult> GetAsync(int id)
         {
             ICqsResult<Contact> result = await _contactRepository.ExecuteAsync(new GetContactByIdQuery(id));
 
@@ -30,8 +41,19 @@ namespace NGK_GestContact.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(CreateContactDto dto)
+        [HttpPost()]
+        public IActionResult Post(CreateContactDto dto)
+        {
+            ICqsResult result = _contactRepository.Execute(new CreateContactCommand(dto.Nom, dto.Prenom, dto.Email, dto.Tel));
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpPost("async")]
+        public async Task<IActionResult> PostAsync(CreateContactDto dto)
         {
             ICqsResult result = await _contactRepository.ExecuteAsync(new CreateContactCommand(dto.Nom, dto.Prenom, dto.Email, dto.Tel));
 

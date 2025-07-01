@@ -8,7 +8,9 @@ namespace NGK_GestContact.Api.Domain.Repositories
 {
     public interface IContactRepository :
         IAsyncQueryHandler<GetContactByIdQuery, Contact>,
-        IAsyncCommandHandler<CreateContactCommand>
+        IQueryHandler<GetContactByIdQuery, Contact>,
+        IAsyncCommandHandler<CreateContactCommand>,
+        ICommandHandler<CreateContactCommand>
     {
     }
 }
