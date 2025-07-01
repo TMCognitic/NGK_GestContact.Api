@@ -36,20 +36,18 @@ namespace Tools.Database
             }
         }
 
-        public static async Task<IEnumerable<TResult>> ExecuteReaderAsync<TResult>(this DbConnection dbConnection, string sql, Func<IDataRecord, TResult> selector, bool isStoredProcedure = false, object? parameters = null)
+        public static async IAsyncEnumerable<TResult> ExecuteReaderAsync<TResult>(this DbConnection dbConnection, string sql, Func<IDataRecord, TResult> selector, bool isStoredProcedure = false, object? parameters = null)
         {
-            IList<TResult> results = new List<TResult>();
             using (DbCommand command = CreateCommand(dbConnection, sql, isStoredProcedure, parameters))
             {
                 using (DbDataReader reader = await command.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
                     {
-                        results.Add(selector(reader));
+                        yield return selector(reader);
                     }
                 }
             }
-            return results;
         }
 
         private static DbCommand CreateCommand(DbConnection dbConnection, string sql, bool isStoredProcedure, object? parameters)

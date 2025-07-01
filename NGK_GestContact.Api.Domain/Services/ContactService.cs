@@ -1,12 +1,13 @@
 ﻿using NGK_GestContact.Api.Domain.Commands;
 using NGK_GestContact.Api.Domain.Entities;
+using NGK_GestContact.Api.Domain.Extensions;
 using NGK_GestContact.Api.Domain.Mappers;
 using NGK_GestContact.Api.Domain.Queries;
 using NGK_GestContact.Api.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
+using System.Linq.Async;
 using System.Text;
 using System.Threading.Tasks;
 using Tools.Cqs.Results;
@@ -83,7 +84,7 @@ namespace NGK_GestContact.Api.Domain.Services
         {
             try
             {
-                Contact? contact = (await _dbConnection.ExecuteReaderAsync("SELECT Id, Nom, Prenom, Email, Tel FROM Contact WHERE Id = @Id", dr => dr.ToContact(), false, query)).SingleOrDefault();
+                Contact? contact = await _dbConnection.ExecuteReaderAsync("SELECT Id, Nom, Prenom, Email, Tel FROM Contact WHERE Id = @Id", dr => dr.ToContact(), false, query).SingleOrDefaultAsync();
                 
                 if(contact is null)
                     return ICqsResult<Contact>.Failure("Contact not found!");
